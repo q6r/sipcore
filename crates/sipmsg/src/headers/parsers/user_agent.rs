@@ -34,6 +34,14 @@ impl SipHeaderParser for UserAgent {
                 continue;
             }
 
+            if tmp_input[0] == b'<' {
+                let (input, _) = take_sws_token::laquot(tmp_input)?;
+                let (input, _) = take_until(">")(input)?;
+                let (input, _) = take_sws_token::raquot(input)?;
+                tmp_input = input;
+                continue;
+            }
+
             if tmp_input[0] == b'/' {
                 let (input, _) = take_sws_token::slash(tmp_input)?;
                 let (input, _) = take_while1(is_token_char)(input)?;
