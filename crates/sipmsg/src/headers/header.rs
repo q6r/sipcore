@@ -241,6 +241,9 @@ impl<'a> Header<'a> {
         loop {
             let (input, (value, params)) = Header::take_value(inp, value_parser)?;
             headers.push_back(Header::new(header_name, value, params, &inp[..inp.len() - input.len()]));
+            if input.is_empty() {
+                return sip_parse_error!(1, "header input is empty");
+            }
             if input[0] == b',' {
                 let (input, _) = take_sws_token::comma(input)?;
                 inp = input;
